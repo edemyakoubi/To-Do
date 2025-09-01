@@ -56,6 +56,28 @@
           </div>
         </div>
       </div>
+
+      <!-- Countdown Timer -->
+      <div class="countdown-container">
+        <h3>Countdown Timer</h3>
+
+        <!-- Buttons for quick time selection -->
+        <div class="time-options">
+          <button onclick="setCountdown(15)">15 min</button>
+          <button onclick="setCountdown(20)">20 min</button>
+          <button onclick="setCountdown(30)">30 min</button>
+        </div>
+
+        <!-- Display -->
+        <div id="countdown-display">00:00</div>
+
+        <!-- Controls -->
+        <div class="controls">
+          <button onclick="startCountdown()">Start</button>
+          <button onclick="stopCountdown()">Stop</button>
+          <button onclick="resetCountdown()">Reset</button>
+        </div>
+      </div>
     </div>
 
     <div class="main-content">
@@ -182,7 +204,31 @@
         </div>
       </section>
     </div>
+    <div class="flash-messages">
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %}
+      <ul>
+        {% for category, message in messages %}
+        <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %} {% endwith %}
+    </div>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+      // Wait for the DOM to fully load
+      document.addEventListener("DOMContentLoaded", () => {
+        const flashMessages = document.querySelectorAll(".flash-messages li");
+        if (flashMessages.length > 0) {
+          setTimeout(() => {
+            flashMessages.forEach((li) => {
+              // Add fade-out class
+              li.classList.add("fade-out");
+            });
+          }, 4000); // 4000ms = 4s
+        }
+      });
+    </script>
   </body>
 </html>
