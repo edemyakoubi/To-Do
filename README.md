@@ -34,16 +34,10 @@ The design focuses on a professional and responsive interface with a sidebar, ta
 
 ---
 
-## Screenshots
-
-![Dashboard Screenshot](screenshot.png) <!-- Add your screenshot here -->
-
----
-
 ## Installation
 
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/your-repo.git
+git clone https://github.com/edemyakoubi/To-Do.git
 ```
