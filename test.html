@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task List</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f5f5f5;
+        padding: 20px;
+      }
+
+      .task-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .task-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #fff;
+        padding: 12px;
+        margin-bottom: 8px;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        cursor: grab;
+      }
+
+      .task-item.dragging {
+        opacity: 0.5;
+      }
+
+      .priority-circle {
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        margin-right: 10px;
+      }
+      .priority-high {
+        background: red;
+      }
+      .priority-medium {
+        background: orange;
+      }
+      .priority-low {
+        background: green;
+      }
+
+      .task-title {
+        flex: 1;
+        text-align: center;
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      .task-actions button {
+        margin-left: 8px;
+        border: none;
+        padding: 6px 10px;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      .btn-check {
+        background: #4caf50;
+        color: white;
+      }
+      .btn-delete {
+        background: #e53935;
+        color: white;
+      }
+      .btn-giveup {
+        background: #ff9800;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>My Tasks</h2>
+    <ul class="task-list" id="taskList">
+      <li class="task-item" draggable="true" data-priority="high">
+        <div class="priority-circle priority-high"></div>
+        <div class="task-title">Finish homework</div>
+        <div class="task-actions">
+          <button class="btn-check">✔</button>
+          <button class="btn-giveup">🚫</button>
+          <button class="btn-delete">🗑</button>
+        </div>
+      </li>
+
+      <li class="task-item" draggable="true" data-priority="medium">
+        <div class="priority-circle priority-medium"></div>
+        <div class="task-title">Read a book</div>
+        <div class="task-actions">
+          <button class="btn-check">✔</button>
+          <button class="btn-giveup">🚫</button>
+          <button class="btn-delete">🗑</button>
+        </div>
+      </li>
+
+      <li class="task-item" draggable="true" data-priority="low">
+        <div class="priority-circle priority-low"></div>
+        <div class="task-title">Water plants</div>
+        <div class="task-actions">
+          <button class="btn-check">✔</button>
+          <button class="btn-giveup">🚫</button>
+          <button class="btn-delete">🗑</button>
+        </div>
+      </li>
+    </ul>
+
+    <script>
+      // Drag & drop
+      const taskList = document.getElementById("taskList");
+      let draggedItem = null;
+
+      taskList.addEventListener("dragstart", (e) => {
+        if (e.target.classList.contains("task-item")) {
+          draggedItem = e.target;
+          e.target.classList.add("dragging");
+        }
+      });
+
+      taskList.addEventListener("dragend", (e) => {
+        if (e.target.classList.contains("task-item")) {
+          e.target.classList.remove("dragging");
+        }
+        draggedItem = null;
+      });
+
+      taskList.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        const afterElement = getDragAfterElement(taskList, e.clientY);
+        if (afterElement == null) {
+          taskList.appendChild(draggedItem);
+        } else {
+          taskList.insertBefore(draggedItem, afterElement);
+        }
+      });
+
+      function getDragAfterElement(container, y) {
+        const draggableElements = [
+          ...container.querySelectorAll(".task-item:not(.dragging)"),
+        ];
+
+        return draggableElements.reduce(
+          (closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+              return { offset: offset, element: child };
+            } else {
+              return closest;
+            }
+          },
+          { offset: Number.NEGATIVE_INFINITY }
+        ).element;
+      }
+
+      // Task actions
+      document.querySelectorAll(".btn-delete").forEach((btn) => {
+        btn.addEventListener("click", (e) =>
+          e.target.closest(".task-item").remove()
+        );
+      });
+
+      document.querySelectorAll(".btn-check").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.target.closest(".task-item").style.textDecoration = "line-through";
+        });
+      });
+
+      document.querySelectorAll(".btn-giveup").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.target.closest(".task-item").style.opacity = "0.5";
+        });
+      });
+    </script>
+  </body>
+</html>
